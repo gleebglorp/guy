@@ -13,7 +13,6 @@ const {
 const {
     WIKIS,
     toggleContribScore,
-    CATEGORY_WIKI_MAP,
     LB_WIKI_CHANNELS,
     LB_SPEEDRUN_CHANNELS
 } = require("../config.js");
@@ -386,7 +385,12 @@ async function handleInteraction(interaction) {
             }
         } catch (err) {
             console.error('Error handling lbwiki interaction:', err);
-            return interaction.reply({ content: 'An error occurred while processing your request.', ephemeral: true }).catch(() => {});
+            const errorMsg = { content: 'An error occurred while processing your request.', ephemeral: true };
+            if (interaction.replied || interaction.deferred) {
+                return interaction.followUp(errorMsg).catch(() => {});
+            } else {
+                return interaction.reply(errorMsg).catch(() => {});
+            }
         }
     } else if (interaction.commandName === 'lbspeedrun') {
         try {
@@ -421,7 +425,12 @@ async function handleInteraction(interaction) {
             }
         } catch (err) {
             console.error('Error handling lbspeedrun interaction:', err);
-            return interaction.reply({ content: 'An error occurred while processing your request.', ephemeral: true }).catch(() => {});
+            const errorMsg = { content: 'An error occurred while processing your request.', ephemeral: true };
+            if (interaction.replied || interaction.deferred) {
+                return interaction.followUp(errorMsg).catch(() => {});
+            } else {
+                return interaction.reply(errorMsg).catch(() => {});
+            }
         }
     } else if (interaction.commandName === 'wiki') {
         const wikiKey = interaction.options.getString('wiki');
