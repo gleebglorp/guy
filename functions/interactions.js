@@ -13,7 +13,9 @@ const {
 const {
     WIKIS,
     toggleContribScore,
-    CATEGORY_WIKI_MAP
+    CATEGORY_WIKI_MAP,
+    LB_WIKI_CHANNELS,
+    LB_SPEEDRUN_CHANNELS
 } = require("../config.js");
 const { fetch } = require("./utils.js");
 
@@ -361,14 +363,11 @@ async function handleInteraction(interaction) {
 
     // Server-specific channel restrictions
     if (interaction.guildId === '1186212011869216899') {
-        const lbWikiChannels = ['1474172093229830386', '1454904720538861568', '1421454100930756709', '1443187613472129135'];
-        const lbSpeedrunChannels = ['1474172093229830386', '1470106351085686936', '1466971095218393262', '1286781908776259626'];
-
-        if (interaction.commandName === 'lbwiki' && !lbWikiChannels.includes(interaction.channelId)) {
-            return interaction.reply({ content: `The \`/lbwiki\` command is only allowed in these channels: ${lbWikiChannels.map(id => `<#${id}>`).join(', ')}`, ephemeral: true });
+        if (interaction.commandName === 'lbwiki' && !LB_WIKI_CHANNELS.includes(interaction.channelId)) {
+            return interaction.reply({ content: `The \`/lbwiki\` command is only allowed in these channels: ${LB_WIKI_CHANNELS.map(id => `<#${id}>`).join(', ')}`, ephemeral: true });
         }
-        if (interaction.commandName === 'lbspeedrun' && !lbSpeedrunChannels.includes(interaction.channelId)) {
-            return interaction.reply({ content: `The \`/lbspeedrun\` command is only allowed in these channels: ${lbSpeedrunChannels.map(id => `<#${id}>`).join(', ')}`, ephemeral: true });
+        if (interaction.commandName === 'lbspeedrun' && !LB_SPEEDRUN_CHANNELS.includes(interaction.channelId)) {
+            return interaction.reply({ content: `The \`/lbspeedrun\` command is only allowed in these channels: ${LB_SPEEDRUN_CHANNELS.map(id => `<#${id}>`).join(', ')}`, ephemeral: true });
         }
     }
 

@@ -16,7 +16,12 @@ const {
     Partials
 } = require("discord.js");
 
-const { WIKIS, CATEGORY_WIKI_MAP, STATUS_INTERVAL_MS } = require("./config.js");
+const {
+    WIKIS,
+    CATEGORY_WIKI_MAP,
+    STATUS_INTERVAL_MS,
+    LB_WIKI_CHANNELS
+} = require("./config.js");
 
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
 
@@ -85,8 +90,7 @@ client.on("messageCreate", async (message) => {
     if (message.author.bot) return;
 
     if (message.guildId === '1186212011869216899') {
-        const lbWikiChannels = ['1474172093229830386', '1454904720538861568', '1421454100930756709', '1443187613472129135'];
-        if (!lbWikiChannels.includes(message.channelId)) return;
+        if (!LB_WIKI_CHANNELS.includes(message.channelId)) return;
     }
 
     const res = getWikiAndPage(message.content, message.channel.parentId);
@@ -127,8 +131,7 @@ client.on("messageUpdate", async (oldMessage, newMessage) => {
     if (!responseMap.has(newMessage.id)) return;
 
     if (newMessage.guildId === '1186212011869216899') {
-        const lbWikiChannels = ['1474172093229830386', '1454904720538861568', '1421454100930756709', '1443187613472129135'];
-        if (!lbWikiChannels.includes(newMessage.channelId)) return;
+        if (!LB_WIKI_CHANNELS.includes(newMessage.channelId)) return;
     }
 
     const res = getWikiAndPage(newMessage.content, newMessage.channel.parentId);
