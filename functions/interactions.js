@@ -8,11 +8,14 @@ const { handleContribScoresRequest } = require("./contribscores.js");
 const { handleSpeedrunRequest } = require("./speedrun.js");
 const {
     SB64_VARIABLES,
-    SR_VARIABLES
+    SB64_DEFAULTS,
+    SR_VARIABLES,
+    SR_DEFAULTS
 } = require("./commands.js");
 const {
     WIKIS,
     toggleContribScore,
+    RESTRICTED_GUILD_ID,
     LB_WIKI_CHANNELS,
     LB_SPEEDRUN_CHANNELS
 } = require("../config.js");
@@ -378,12 +381,12 @@ async function handleInteraction(interaction) {
     if (!interaction.isCommand()) return;
 
     // Server-specific channel restrictions
-    if (interaction.guildId === '1186212011869216899') {
+    if (interaction.guildId === RESTRICTED_GUILD_ID) {
         if (interaction.commandName === 'lbwiki' && !LB_WIKI_CHANNELS.includes(interaction.channelId)) {
-            return interaction.reply({ content: buildChannelRestrictionReply('lbwiki', LB_WIKI_CHANNELS), ephemeral: true });
+            return interaction.reply({ content: buildChannelRestrictionReply('lbwiki', LB_WIKI_CHANNELS), ephemeral: true }).catch(() => {});
         }
         if (interaction.commandName === 'lbspeedrun' && !LB_SPEEDRUN_CHANNELS.includes(interaction.channelId)) {
-            return interaction.reply({ content: buildChannelRestrictionReply('lbspeedrun', LB_SPEEDRUN_CHANNELS), ephemeral: true });
+            return interaction.reply({ content: buildChannelRestrictionReply('lbspeedrun', LB_SPEEDRUN_CHANNELS), ephemeral: true }).catch(() => {});
         }
     }
 
@@ -405,18 +408,18 @@ async function handleInteraction(interaction) {
             let response;
             if (subCommand === 'sb64') {
                 const categoryId = interaction.options.getString('category');
-                const character = interaction.options.getString('character') || '10v9vdjl'; // Default to Both
+                const character = interaction.options.getString('character') || SB64_DEFAULTS.CHARACTER; // Default to Both
                 const glitches = interaction.options.getBoolean('glitches');
 
                 const variables = {};
                 variables[SB64_VARIABLES.CHARACTER] = character;
-                variables[SB64_VARIABLES.GLITCHES] = glitches ? 'qox3r45q' : 'lmo4g581'; // true = Glitches, false/null = Glitchless
+                variables[SB64_VARIABLES.GLITCHES] = glitches ? SB64_DEFAULTS.GLITCHES_ON : SB64_DEFAULTS.GLITCHES_OFF; // true = Glitches, false/null = Glitchless
 
                 response = await handleSpeedrunRequest(interaction, 'sb64', categoryId, null, variables);
             } else if (subCommand === 'sr') {
                 const categoryId = interaction.options.getString('category');
                 const levelId = interaction.options.getString('level');
-                const events = interaction.options.getString('events') || 'qkem56nq'; // Default to No Events
+                const events = interaction.options.getString('events') || SR_DEFAULTS.EVENTS; // Default to No Events
 
                 const variables = {};
                 variables[SR_VARIABLES.EVENTS] = events;

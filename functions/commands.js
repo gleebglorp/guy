@@ -115,6 +115,16 @@ const SR_EVENTS_CHOICES = [
     { name: 'Raised Speed Cap + Low Gravity', value: 'qyzog9d1' }
 ];
 
+const SB64_DEFAULTS = {
+    CHARACTER: '10v9vdjl',
+    GLITCHES_ON: 'qox3r45q',
+    GLITCHES_OFF: 'lmo4g581'
+};
+
+const SR_DEFAULTS = {
+    EVENTS: 'qkem56nq'
+};
+
 const commands = [
     {
         name: 'lbspeedrun',
@@ -265,5 +275,7 @@ module.exports = {
     SB64_CATEGORY_IDS,
     SB64_LEVEL_IDS,
     SB64_VARIABLES,
-    SR_VARIABLES
+    SB64_DEFAULTS,
+    SR_VARIABLES,
+    SR_DEFAULTS
 };

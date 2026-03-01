@@ -20,6 +20,7 @@ const {
     WIKIS,
     CATEGORY_WIKI_MAP,
     STATUS_INTERVAL_MS,
+    RESTRICTED_GUILD_ID,
     LB_WIKI_CHANNELS
 } = require("./config.js");
 
@@ -89,7 +90,7 @@ function getWikiAndPage(messageContent, channelParentId) {
 client.on("messageCreate", async (message) => {
     if (message.author.bot) return;
 
-    if (message.guildId === '1186212011869216899') {
+    if (message.guildId === RESTRICTED_GUILD_ID) {
         if (!LB_WIKI_CHANNELS.includes(message.channelId)) return;
     }
 
@@ -130,7 +131,7 @@ client.on("messageUpdate", async (oldMessage, newMessage) => {
     if (oldMessage.content === newMessage.content) return;
     if (!responseMap.has(newMessage.id)) return;
 
-    if (newMessage.guildId === '1186212011869216899') {
+    if (newMessage.guildId === RESTRICTED_GUILD_ID) {
         if (!LB_WIKI_CHANNELS.includes(newMessage.channelId)) return;
     }
 
