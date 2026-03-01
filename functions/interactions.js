@@ -42,7 +42,20 @@ function pruneMap(map, maxSize = 1000) {
 }
 
 function buildChannelRestrictionReply(commandName, allowedChannels) {
+    if (!allowedChannels || allowedChannels.length === 0) {
+        return `The \`/${commandName}\` command is not configured for any channels.`;
+    }
     return `The \`/${commandName}\` command is only allowed in these channels: ${allowedChannels.map(id => `<#${id}>`).join(', ')}`;
+}
+
+function sendInteractionError(interaction, error, tag) {
+    console.error(`Error handling ${tag} interaction:`, error);
+    const errorMsg = { content: 'An error occurred while processing your request.', ephemeral: true };
+    if (interaction.replied || interaction.deferred) {
+        return interaction.followUp(errorMsg).catch(() => {});
+    } else {
+        return interaction.reply(errorMsg).catch(() => {});
+    }
 }
 
 async function fetchWikiChoices(wikiConfig, params, listKey, isFileSearch) {
@@ -384,13 +397,7 @@ async function handleInteraction(interaction) {
                 return interaction.reply({ content: 'Unknown subcommand.', ephemeral: true }).catch(() => {});
             }
         } catch (err) {
-            console.error('Error handling lbwiki interaction:', err);
-            const errorMsg = { content: 'An error occurred while processing your request.', ephemeral: true };
-            if (interaction.replied || interaction.deferred) {
-                return interaction.followUp(errorMsg).catch(() => {});
-            } else {
-                return interaction.reply(errorMsg).catch(() => {});
-            }
+            return sendInteractionError(interaction, err, 'lbwiki');
         }
     } else if (interaction.commandName === 'lbspeedrun') {
         try {
@@ -424,13 +431,7 @@ async function handleInteraction(interaction) {
                 pruneMap(botToAuthorMap);
             }
         } catch (err) {
-            console.error('Error handling lbspeedrun interaction:', err);
-            const errorMsg = { content: 'An error occurred while processing your request.', ephemeral: true };
-            if (interaction.replied || interaction.deferred) {
-                return interaction.followUp(errorMsg).catch(() => {});
-            } else {
-                return interaction.reply(errorMsg).catch(() => {});
-            }
+            return sendInteractionError(interaction, err, 'lbspeedrun');
         }
     } else if (interaction.commandName === 'wiki') {
         const wikiKey = interaction.options.getString('wiki');
