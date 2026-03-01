@@ -42,6 +42,10 @@ function pruneMap(map, maxSize = 1000) {
     }
 }
 
+function buildChannelRestrictionReply(commandName, allowedChannels) {
+    return `The \`/${commandName}\` command is only allowed in these channels: ${allowedChannels.map(id => `<#${id}>`).join(', ')}`;
+}
+
 async function fetchWikiChoices(wikiConfig, params, listKey, isFileSearch) {
     try {
         const res = await fetch(`${wikiConfig.apiEndpoint}?${params.toString()}`, {
@@ -364,49 +368,60 @@ async function handleInteraction(interaction) {
     // Server-specific channel restrictions
     if (interaction.guildId === '1186212011869216899') {
         if (interaction.commandName === 'lbwiki' && !LB_WIKI_CHANNELS.includes(interaction.channelId)) {
-            return interaction.reply({ content: `The \`/lbwiki\` command is only allowed in these channels: ${LB_WIKI_CHANNELS.map(id => `<#${id}>`).join(', ')}`, ephemeral: true });
+            return interaction.reply({ content: buildChannelRestrictionReply('lbwiki', LB_WIKI_CHANNELS), ephemeral: true });
         }
         if (interaction.commandName === 'lbspeedrun' && !LB_SPEEDRUN_CHANNELS.includes(interaction.channelId)) {
-            return interaction.reply({ content: `The \`/lbspeedrun\` command is only allowed in these channels: ${LB_SPEEDRUN_CHANNELS.map(id => `<#${id}>`).join(', ')}`, ephemeral: true });
+            return interaction.reply({ content: buildChannelRestrictionReply('lbspeedrun', LB_SPEEDRUN_CHANNELS), ephemeral: true });
         }
     }
 
     if (interaction.commandName === 'lbwiki') {
-        const subCommand = interaction.options.getSubcommand();
-        if (subCommand === 'contribs') {
-            await handleContribScoresRequest(interaction, { toggleContribScore, WIKIS, buildPageEmbed, botToAuthorMap, pruneMap, MessageFlags });
-            return;
+        try {
+            const subCommand = interaction.options.getSubcommand();
+            if (subCommand === 'contribs') {
+                await handleContribScoresRequest(interaction, { toggleContribScore, WIKIS, buildPageEmbed, botToAuthorMap, pruneMap, MessageFlags });
+                return;
+            } else {
+                return interaction.reply({ content: 'Unknown subcommand.', ephemeral: true }).catch(() => {});
+            }
+        } catch (err) {
+            console.error('Error handling lbwiki interaction:', err);
+            return interaction.reply({ content: 'An error occurred while processing your request.', ephemeral: true }).catch(() => {});
         }
-        return interaction.reply({ content: 'Unknown /lbwiki subcommand.', ephemeral: true }).catch(() => {});
     } else if (interaction.commandName === 'lbspeedrun') {
-        const subCommand = interaction.options.getSubcommand();
-        let response;
-        if (subCommand === 'sb64') {
-            const categoryId = interaction.options.getString('category');
-            const character = interaction.options.getString('character') || '10v9vdjl'; // Default to Both
-            const glitches = interaction.options.getBoolean('glitches');
+        try {
+            const subCommand = interaction.options.getSubcommand();
+            let response;
+            if (subCommand === 'sb64') {
+                const categoryId = interaction.options.getString('category');
+                const character = interaction.options.getString('character') || '10v9vdjl'; // Default to Both
+                const glitches = interaction.options.getBoolean('glitches');
 
-            const variables = {};
-            variables[SB64_VARIABLES.CHARACTER] = character;
-            variables[SB64_VARIABLES.GLITCHES] = glitches ? 'qox3r45q' : 'lmo4g581'; // true = Glitches, false/null = Glitchless
+                const variables = {};
+                variables[SB64_VARIABLES.CHARACTER] = character;
+                variables[SB64_VARIABLES.GLITCHES] = glitches ? 'qox3r45q' : 'lmo4g581'; // true = Glitches, false/null = Glitchless
 
-            response = await handleSpeedrunRequest(interaction, 'sb64', categoryId, null, variables);
-        } else if (subCommand === 'sr') {
-            const categoryId = interaction.options.getString('category');
-            const levelId = interaction.options.getString('level');
-            const events = interaction.options.getString('events') || 'qkem56nq'; // Default to No Events
+                response = await handleSpeedrunRequest(interaction, 'sb64', categoryId, null, variables);
+            } else if (subCommand === 'sr') {
+                const categoryId = interaction.options.getString('category');
+                const levelId = interaction.options.getString('level');
+                const events = interaction.options.getString('events') || 'qkem56nq'; // Default to No Events
 
-            const variables = {};
-            variables[SR_VARIABLES.EVENTS] = events;
+                const variables = {};
+                variables[SR_VARIABLES.EVENTS] = events;
 
-            response = await handleSpeedrunRequest(interaction, 'sr', categoryId, levelId, variables);
-        } else {
-            return interaction.reply({ content: 'Unknown /lbspeedrun subcommand.', ephemeral: true }).catch(() => {});
-        }
+                response = await handleSpeedrunRequest(interaction, 'sr', categoryId, levelId, variables);
+            } else {
+                return interaction.reply({ content: 'Unknown subcommand.', ephemeral: true }).catch(() => {});
+            }
 
-        if (response && response.id) {
-            botToAuthorMap.set(response.id, interaction.user.id);
-            pruneMap(botToAuthorMap);
+            if (response && response.id) {
+                botToAuthorMap.set(response.id, interaction.user.id);
+                pruneMap(botToAuthorMap);
+            }
+        } catch (err) {
+            console.error('Error handling lbspeedrun interaction:', err);
+            return interaction.reply({ content: 'An error occurred while processing your request.', ephemeral: true }).catch(() => {});
         }
     } else if (interaction.commandName === 'wiki') {
         const wikiKey = interaction.options.getString('wiki');
