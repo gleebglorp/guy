@@ -377,6 +377,7 @@ async function handleInteraction(interaction) {
             await handleContribScoresRequest(interaction, { toggleContribScore, WIKIS, buildPageEmbed, botToAuthorMap, pruneMap, MessageFlags });
             return;
         }
+        return interaction.reply({ content: 'Unknown /lbwiki subcommand.', ephemeral: true }).catch(() => {});
     } else if (interaction.commandName === 'lbspeedrun') {
         const subCommand = interaction.options.getSubcommand();
         let response;
@@ -399,6 +400,8 @@ async function handleInteraction(interaction) {
             variables[SR_VARIABLES.EVENTS] = events;
 
             response = await handleSpeedrunRequest(interaction, 'sr', categoryId, levelId, variables);
+        } else {
+            return interaction.reply({ content: 'Unknown /lbspeedrun subcommand.', ephemeral: true }).catch(() => {});
         }
 
         if (response && response.id) {
