@@ -117,8 +117,8 @@ const SR_EVENTS_CHOICES = [
 
 const commands = [
     {
-        name: 'lb',
-        description: 'View leaderboards',
+        name: 'lbspeedrun',
+        description: 'View speedrun leaderboards',
         options: [
             {
                 name: 'sb64',
@@ -174,7 +174,13 @@ const commands = [
                         choices: SR_EVENTS_CHOICES
                     }
                 ]
-            },
+            }
+        ]
+    },
+    {
+        name: 'lbwiki',
+        description: 'View wiki leaderboards',
+        options: [
             {
                 name: 'contribs',
                 description: 'Get contribution scores for a wiki',

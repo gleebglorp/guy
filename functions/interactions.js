@@ -359,13 +359,29 @@ async function handleInteraction(interaction) {
 
     if (!interaction.isCommand()) return;
 
-    if (interaction.commandName === 'lb') {
+    // Server-specific channel restrictions
+    if (interaction.guildId === '1186212011869216899') {
+        const lbWikiChannels = ['1474172093229830386', '1454904720538861568', '1421454100930756709', '1443187613472129135'];
+        const lbSpeedrunChannels = ['1474172093229830386', '1470106351085686936', '1466971095218393262', '1286781908776259626'];
+
+        if (interaction.commandName === 'lbwiki' && !lbWikiChannels.includes(interaction.channelId)) {
+            return interaction.reply({ content: `The \`/lbwiki\` command is only allowed in these channels: ${lbWikiChannels.map(id => `<#${id}>`).join(', ')}`, ephemeral: true });
+        }
+        if (interaction.commandName === 'lbspeedrun' && !lbSpeedrunChannels.includes(interaction.channelId)) {
+            return interaction.reply({ content: `The \`/lbspeedrun\` command is only allowed in these channels: ${lbSpeedrunChannels.map(id => `<#${id}>`).join(', ')}`, ephemeral: true });
+        }
+    }
+
+    if (interaction.commandName === 'lbwiki') {
         const subCommand = interaction.options.getSubcommand();
-        let response;
         if (subCommand === 'contribs') {
             await handleContribScoresRequest(interaction, { toggleContribScore, WIKIS, buildPageEmbed, botToAuthorMap, pruneMap, MessageFlags });
             return;
-        } else if (subCommand === 'sb64') {
+        }
+    } else if (interaction.commandName === 'lbspeedrun') {
+        const subCommand = interaction.options.getSubcommand();
+        let response;
+        if (subCommand === 'sb64') {
             const categoryId = interaction.options.getString('category');
             const character = interaction.options.getString('character') || '10v9vdjl'; // Default to Both
             const glitches = interaction.options.getBoolean('glitches');
