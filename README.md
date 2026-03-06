@@ -7,6 +7,7 @@
 </p>
 
 ## Setup
+Please note that `server.js` exists on the repository so that Instatus is able to get active status of the bot. It can be removed.
 
 1. **Clone the repository**
    ```bash
