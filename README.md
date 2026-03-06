@@ -23,8 +23,8 @@
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/conecorp/wiki-guy.git
-   cd wiki-guy
+   git clone https://github.com/conecorp/wikiguy.git
+   cd wikiguy
    ```
 
 2. **Install dependencies:**
@@ -43,7 +43,6 @@
    ```bash
    npm start
    ```
-   *Note: If `npm start` is not configured, you can run `node index.js`.*
 
 ## Configuration
 
