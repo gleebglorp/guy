@@ -9,6 +9,7 @@ const { handleSpeedrunRequest } = require("./speedrun.js");
 const {
     SB64_VARIABLES,
     SB64_DEFAULTS,
+    SR_CATEGORY_IDS,
     SR_VARIABLES,
     SR_DEFAULTS
 } = require("./commands.js");
@@ -397,12 +398,24 @@ async function handleInteraction(interaction) {
 
                 response = await handleSpeedrunRequest(interaction, 'sb64', categoryId, null, variables);
             } else if (subCommand === 'sr') {
-                const categoryId = interaction.options.getString('category');
+                let categoryId = interaction.options.getString('category');
                 const levelId = interaction.options.getString('level');
                 const events = interaction.options.getString('events') || SR_DEFAULTS.EVENTS; // Default to No Events
 
                 const variables = {};
                 variables[SR_VARIABLES.EVENTS] = events;
+
+                // Handle custom All Maps category choices
+                if (categoryId === 'sr_all_maps_v12') {
+                    categoryId = SR_CATEGORY_IDS.ALL_MAPS;
+                    variables[SR_VARIABLES.VERSIONS] = SR_DEFAULTS.VERSION_V12;
+                } else if (categoryId === 'sr_all_maps_lobby') {
+                    categoryId = SR_CATEGORY_IDS.ALL_MAPS;
+                    variables[SR_VARIABLES.VERSIONS] = SR_DEFAULTS.VERSION_LOBBY;
+                } else if (categoryId === SR_CATEGORY_IDS.ALL_MAPS) {
+                    // Fallback for direct ID or old values, default to V12
+                    variables[SR_VARIABLES.VERSIONS] = SR_DEFAULTS.VERSION_V12;
+                }
 
                 response = await handleSpeedrunRequest(interaction, 'sr', categoryId, levelId, variables);
             } else {
