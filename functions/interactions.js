@@ -10,6 +10,8 @@ const {
     SB64_VARIABLES,
     SB64_DEFAULTS,
     SR_CATEGORY_IDS,
+    SR_ALL_MAPS_V12_VALUE,
+    SR_ALL_MAPS_LOBBY_VALUE,
     SR_VARIABLES,
     SR_DEFAULTS
 } = require("./commands.js");
@@ -406,10 +408,10 @@ async function handleInteraction(interaction) {
                 variables[SR_VARIABLES.EVENTS] = events;
 
                 // Handle custom All Maps category choices
-                if (categoryId === 'sr_all_maps_v12') {
+                if (categoryId === SR_ALL_MAPS_V12_VALUE) {
                     categoryId = SR_CATEGORY_IDS.ALL_MAPS;
                     variables[SR_VARIABLES.VERSIONS] = SR_DEFAULTS.VERSION_V12;
-                } else if (categoryId === 'sr_all_maps_lobby') {
+                } else if (categoryId === SR_ALL_MAPS_LOBBY_VALUE) {
                     categoryId = SR_CATEGORY_IDS.ALL_MAPS;
                     variables[SR_VARIABLES.VERSIONS] = SR_DEFAULTS.VERSION_LOBBY;
                 } else if (categoryId === SR_CATEGORY_IDS.ALL_MAPS) {
