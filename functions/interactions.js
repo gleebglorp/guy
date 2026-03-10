@@ -401,7 +401,7 @@ async function handleInteraction(interaction) {
                 response = await handleSpeedrunRequest(interaction, 'sb64', categoryId, null, variables);
             } else if (subCommand === 'sr') {
                 let categoryId = interaction.options.getString('category');
-                const levelId = interaction.options.getString('level');
+                let levelId = interaction.options.getString('level');
                 const events = interaction.options.getString('events') || SR_DEFAULTS.EVENTS; // Default to No Events
 
                 const variables = {};
@@ -411,12 +411,15 @@ async function handleInteraction(interaction) {
                 if (categoryId === SR_ALL_MAPS_V12_VALUE) {
                     categoryId = SR_CATEGORY_IDS.ALL_MAPS;
                     variables[SR_VARIABLES.VERSIONS] = SR_DEFAULTS.VERSION_V12;
+                    levelId = null; // Ensure levelId is cleared for full-game categories
                 } else if (categoryId === SR_ALL_MAPS_LOBBY_VALUE) {
                     categoryId = SR_CATEGORY_IDS.ALL_MAPS;
                     variables[SR_VARIABLES.VERSIONS] = SR_DEFAULTS.VERSION_LOBBY;
+                    levelId = null; // Ensure levelId is cleared for full-game categories
                 } else if (categoryId === SR_CATEGORY_IDS.ALL_MAPS) {
                     // Fallback for direct ID or old values, default to V12
                     variables[SR_VARIABLES.VERSIONS] = SR_DEFAULTS.VERSION_V12;
+                    levelId = null; // Ensure levelId is cleared for full-game categories
                 }
 
                 response = await handleSpeedrunRequest(interaction, 'sr', categoryId, levelId, variables);
