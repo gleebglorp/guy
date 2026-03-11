@@ -78,7 +78,6 @@ const SR_LEVEL_IDS = {
     UNDERWATER_HIGHWAY: '9x1lxm1d',
     WINTER_WONDERLAND: '9gy3vpj9',
     LOBBY_EASY: 'wj75z50w',
-    // eslint-disable-next-line no-dupe-keys
     LOBBY_MEDIUM: 'wo7060j9',
     LOBBY_HARD: 'd1j727zd'
 };
