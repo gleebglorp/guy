@@ -26,6 +26,8 @@ const commands = [
     {
         name: 'lbspeedrun',
         description: 'View speedrun leaderboards',
+        integrationTypes: [0, 1],
+        contexts: [0, 1, 2],
         options: [
             {
                 name: 'sb64',
@@ -101,6 +103,8 @@ const commands = [
     {
         name: 'lbwiki',
         description: 'View wiki leaderboards',
+        integrationTypes: [0, 1],
+        contexts: [0, 1, 2],
         options: [
             {
                 name: 'contribs',
@@ -121,6 +125,8 @@ const commands = [
     {
         name: 'wiki',
         description: 'Get a link to a wiki',
+        integrationTypes: [0, 1],
+        contexts: [0, 1, 2],
         options: [
             {
                 name: 'wiki',
@@ -134,6 +140,8 @@ const commands = [
     {
         name: 'parse',
         description: 'Search for a page or file on a wiki',
+        integrationTypes: [0, 1],
+        contexts: [0, 1, 2],
         options: [
             {
                 name: 'page',
